@@ -1,18 +1,10 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import { SiteFooter } from "@/components/layout/site-footer";
+import { rootMetadata } from "@/lib/metadata";
 import "./globals.css";
 
-const siteUrl = "https://www.eaglehillshomes.com";
-
-export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
-  title: {
-    default: "Eagle Hills Homes | Las Vegas Area Real Estate",
-    template: "%s | Eagle Hills Homes",
-  },
-  description:
-    "Homes and real estate in the Eagle Hills area. Connect with a local agent for buyers, sellers, and market guidance.",
-};
+export const metadata: Metadata = rootMetadata;
 
 export default function RootLayout({
   children,
@@ -23,6 +15,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="min-h-screen bg-white text-slate-900 antialiased">
         {children}
+        <SiteFooter />
         <Script
           src="https://em.realscout.com/widgets/realscout-web-components.umd.js"
           type="module"
