@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
+import { PropertyFloorPlan } from "@/components/property/PropertyFloorPlan";
+import { PropertyGallery } from "@/components/property/PropertyGallery";
+import { PropertyHero } from "@/components/property/PropertyHero";
+import { PropertyNeighborhood } from "@/components/property/PropertyNeighborhood";
 import { JsonLd } from "@/components/seo/json-ld";
 import {
   EAGLE_HILLS_COMMUNITY_DESCRIPTION,
-  EAGLE_HILLS_HEADLINE,
-  EAGLE_HILLS_HOME_COUNT,
   EAGLE_HILLS_LISTING_STATS,
   EAGLE_HILLS_TAGLINE,
   formatUsd,
 } from "@/lib/eagle-hills-community";
+import { FEATURED_PROPERTY } from "@/lib/property-template";
 import {
   AGENT_NAME,
   BROKERAGE,
@@ -16,19 +19,21 @@ import {
   SITE_NAME,
   SITE_URL,
 } from "@/lib/site-contact";
-import { getFaqContent, getHomeJsonLd } from "@/lib/schema";
+import { getFaqContent, getHomePageJsonLdWithListing } from "@/lib/schema";
 
 const REALSCOUT_OFFICE_LISTINGS_HTML =
   '<realscout-office-listings agent-encoded-id="QWdlbnQtMjI1MDUw" sort-order="PRICE_HIGH" listing-status="For Sale" property-types=",SFR" price-min="1000000" price-max="20000000"></realscout-office-listings>';
 
-const MAP_EMBED_SRC =
+const OFFICE_MAP_EMBED_SRC =
   "https://www.google.com/maps?q=" +
   encodeURIComponent(OFFICE_ADDRESS_SINGLE_LINE) +
   "&output=embed";
 
+const ogImageUrl = new URL(FEATURED_PROPERTY.heroImage.src, SITE_URL).toString();
+
 export async function generateMetadata(): Promise<Metadata> {
-  const title = "Eagle Hills Real Estate | Luxury Summerlin Homes for Sale";
-  const description = `Eagle Hills in Summerlin, Las Vegas: guard-gated custom homes in The Hills South village (${EAGLE_HILLS_HOME_COUNT} homes). Browse MLS listings, review current Eagle Hills listing stats, and connect with ${AGENT_NAME} (${BROKERAGE}).`;
+  const title = `${FEATURED_PROPERTY.headline} | ${SITE_NAME}`;
+  const description = `Featured Summerlin listing in ${FEATURED_PROPERTY.addressLine}. ${FEATURED_PROPERTY.priceDisplay} · ${FEATURED_PROPERTY.beds} bed · ${FEATURED_PROPERTY.baths} bath · ${FEATURED_PROPERTY.livingSqft.toLocaleString("en-US")} sq ft. Tour and details with ${AGENT_NAME} (${BROKERAGE}).`;
 
   return {
     title,
@@ -42,11 +47,20 @@ export async function generateMetadata(): Promise<Metadata> {
       url: SITE_URL,
       type: "website",
       siteName: SITE_NAME,
+      images: [
+        {
+          url: ogImageUrl,
+          width: FEATURED_PROPERTY.heroImage.width,
+          height: FEATURED_PROPERTY.heroImage.height,
+          alt: FEATURED_PROPERTY.heroImage.alt,
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
+      images: [ogImageUrl],
     },
   };
 }
@@ -54,27 +68,44 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function HomePage() {
   const faqItems = getFaqContent();
   const stats = EAGLE_HILLS_LISTING_STATS;
+  const listing = FEATURED_PROPERTY;
+
+  const jsonLd = getHomePageJsonLdWithListing({
+    slug: listing.slug,
+    headline: listing.headline,
+    priceValue: listing.priceValue,
+    schemaStreetAddress: listing.schemaStreetAddress,
+    schemaPostalCode: listing.schemaPostalCode,
+    beds: listing.beds,
+    baths: listing.baths,
+    livingSqft: listing.livingSqft,
+  });
 
   return (
     <>
-      <JsonLd data={getHomeJsonLd()} />
+      <JsonLd data={jsonLd} />
       <main className="mx-auto max-w-5xl px-6 py-12">
-        <header className="max-w-3xl">
-          <p className="text-sm font-semibold uppercase tracking-wide text-[#0e64c8]">
-            {EAGLE_HILLS_TAGLINE}
-          </p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900 md:text-4xl">
-            {EAGLE_HILLS_HEADLINE}
-          </h1>
-          <p className="mt-4 text-lg leading-relaxed text-slate-600">
-            {EAGLE_HILLS_COMMUNITY_DESCRIPTION}
-          </p>
+        <PropertyHero
+          tagline={EAGLE_HILLS_TAGLINE}
+          headline={listing.headline}
+          addressLine={listing.addressLine}
+          priceDisplay={listing.priceDisplay}
+          beds={listing.beds}
+          baths={listing.baths}
+          livingSqft={listing.livingSqft}
+          lotAcres={listing.lotAcres}
+          heroImage={listing.heroImage}
+        />
+
+        <section className="mt-10 max-w-3xl">
+          <h2 className="sr-only">About the community</h2>
+          <p className="text-lg leading-relaxed text-slate-600">{EAGLE_HILLS_COMMUNITY_DESCRIPTION}</p>
           <p className="mt-4 text-lg text-slate-600">
-            Explore <strong className="font-semibold text-slate-800">{SITE_NAME}</strong> for{" "}
-            {SERVICE_AREA_PRIMARY}—use the live MLS feed below, then call or email {AGENT_NAME} for
-            showings, pricing strategy, and a curated short list.
+            Explore <strong className="font-semibold text-slate-800">{SITE_NAME}</strong> across{" "}
+            {SERVICE_AREA_PRIMARY}—use the home search below for similar inventory, or call{" "}
+            {AGENT_NAME} for a private tour of this home.
           </p>
-        </header>
+        </section>
 
         <section
           className="mt-12 rounded-xl border border-slate-200 bg-slate-50/80 p-6 md:p-8"
@@ -118,22 +149,35 @@ export default function HomePage() {
 
         <section className="mt-12" id="listings" aria-labelledby="listings-heading">
           <h2 id="listings-heading" className="text-2xl font-semibold text-slate-900">
-            Eagle Hills homes for sale (MLS-backed search)
+            More Eagle Hills homes for sale
           </h2>
-          <p className="mt-3 text-slate-600">
-            Listings update from the MLS via RealScout. Filters below focus on single-family resales
-            in a broad luxury band—ask {AGENT_NAME} to refine by village, views, lot size, and HOA
-            inside Summerlin.
-          </p>
           <div className="mt-6 w-full">
             <div dangerouslySetInnerHTML={{ __html: REALSCOUT_OFFICE_LISTINGS_HTML }} />
           </div>
           <p className="mt-4 text-xs text-slate-500">
-            Data is supplied by MLS partners and third-party sources. Not guaranteed—verify square
-            footage, taxes, HOA fees, and status with your agent. Equal Housing Opportunity.
-            Brokerage: {BROKERAGE}.
+            Listing information comes from participating brokers and may not show every home on the
+            market. Details are not guaranteed—confirm square footage, taxes, HOA fees, and status
+            with your agent. Equal Housing Opportunity. Brokerage: {BROKERAGE}.
           </p>
         </section>
+
+        <PropertyGallery title="Gallery" items={listing.gallery} />
+
+        <PropertyFloorPlan
+          title="Floor plan"
+          imageSrc={listing.floorPlan.imageSrc}
+          alt={listing.floorPlan.alt}
+          width={listing.floorPlan.width}
+          height={listing.floorPlan.height}
+          pdfHref={listing.floorPlan.pdfHref}
+        />
+
+        <PropertyNeighborhood
+          title={listing.neighborhood.title}
+          body={listing.neighborhood.body}
+          mapEmbedSrc={listing.neighborhood.mapEmbedSrc}
+          mapTitle="Eagle Hills and Summerlin area map"
+        />
 
         <section className="mt-14" id="about-eagle-hills" aria-labelledby="geo-heading">
           <h2 id="geo-heading" className="text-2xl font-semibold text-slate-900">
@@ -162,7 +206,7 @@ export default function HomePage() {
               className="h-72 w-full"
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              src={MAP_EMBED_SRC}
+              src={OFFICE_MAP_EMBED_SRC}
             />
           </div>
         </section>

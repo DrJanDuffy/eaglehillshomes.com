@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="Placeholder hero image for luxury home exterior">
+  <defs>
+    <linearGradient id="sky" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#bae6fd;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e0f2fe;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect fill="url(#sky)" width="1200" height="630"/>
+  <rect fill="#cbd5e1" x="200" y="280" width="800" height="220" rx="4"/>
+  <rect fill="#94a3b8" x="520" y="380" width="120" height="120" rx="2"/>
+  <text x="600" y="120" text-anchor="middle" fill="#475569" font-family="system-ui,sans-serif" font-size="22">Replace with MLS-approved photo</text>
+</svg>

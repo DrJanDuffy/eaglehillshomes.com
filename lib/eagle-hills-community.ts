@@ -7,7 +7,7 @@ export const EAGLE_HILLS_TAGLINE = "Luxury Summerlin Community";
 /** Custom homes built in the neighborhood (community fact). */
 export const EAGLE_HILLS_HOME_COUNT = 153;
 
-/** Point-in-time active listing snapshot — refresh with MLS when marketing this block. */
+/** Point-in-time active listing snapshot — refresh when marketing this block. */
 export const EAGLE_HILLS_LISTING_STATS = {
   totalListings: 3,
   averagePrice: 3_750_000,

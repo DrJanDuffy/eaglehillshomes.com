@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* RealScout office listings widget */
+/* Office listings widget (custom element) */
 realscout-office-listings {
   --rs-listing-divider-color: #0e64c8;
   width: 100%;

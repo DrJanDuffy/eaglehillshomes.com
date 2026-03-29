@@ -41,3 +41,24 @@ export const AGENT_PROFILE_URL =
 export const GOOGLE_REVIEWS_URL =
   "https://www.google.com/maps/search/?api=1&query=" +
   encodeURIComponent("Dr. Jan Duffy Berkshire Hathaway HomeServices Las Vegas");
+
+/** Matches visible footer + JSON-LD openingHours; align with Google Business Profile. */
+export const BUSINESS_HOURS_CUSTOMER_COPY =
+  "By appointment — call or email to schedule tours and consultations.";
+
+/**
+ * Official profiles for JSON-LD `sameAs` (agent + optional Google Business Profile).
+ * Set `NEXT_PUBLIC_GOOGLE_BUSINESS_PROFILE_URL` in Vercel to your Maps/GBP URL.
+ */
+export function getAgentSameAsUrls(): string[] {
+  const urls: string[] = [AGENT_PROFILE_URL];
+  const gbp = process.env.NEXT_PUBLIC_GOOGLE_BUSINESS_PROFILE_URL?.trim();
+  if (gbp) urls.push(gbp);
+  return [...new Set(urls)];
+}
+
+/** When set, footer shows a “Google Business Profile” button and JSON-LD `sameAs` includes this URL. */
+export function getGoogleBusinessProfileUrl(): string | undefined {
+  const u = process.env.NEXT_PUBLIC_GOOGLE_BUSINESS_PROFILE_URL?.trim();
+  return u || undefined;
+}

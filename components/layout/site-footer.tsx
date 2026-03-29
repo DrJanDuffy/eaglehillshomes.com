@@ -1,7 +1,9 @@
 import {
   AGENT_NAME,
   BROKERAGE,
+  BUSINESS_HOURS_CUSTOMER_COPY,
   EMAIL,
+  getGoogleBusinessProfileUrl,
   LICENSE_ID,
   MAPS_DIRECTIONS_URL,
   OFFICE_ADDRESS_LINES,
@@ -14,6 +16,7 @@ import {
 export function SiteFooter() {
   const telHref = `tel:${PHONE_E164}`;
   const mailHref = `mailto:${EMAIL}`;
+  const gbpUrl = getGoogleBusinessProfileUrl();
 
   return (
     <footer className="border-t border-slate-200 bg-slate-50">
@@ -54,6 +57,16 @@ export function SiteFooter() {
               >
                 Directions
               </a>
+              {gbpUrl ? (
+                <a
+                  className="inline-flex items-center justify-center rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-800 hover:bg-slate-100"
+                  href={gbpUrl}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  Google Business Profile
+                </a>
+              ) : null}
               <a
                 className="inline-flex items-center justify-center rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-800 hover:bg-slate-100"
                 href={GOOGLE_REVIEWS_URL}
@@ -69,9 +82,7 @@ export function SiteFooter() {
                 Email
               </a>
             </div>
-            <p className="text-xs text-slate-500">
-              Hours: by appointment — call or email to schedule tours and consultations.
-            </p>
+            <p className="text-xs text-slate-500">Hours: {BUSINESS_HOURS_CUSTOMER_COPY}</p>
           </div>
         </div>
         <p className="mt-10 text-xs text-slate-500">

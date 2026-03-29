@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="800" viewBox="0 0 1000 800" role="img" aria-label="Placeholder floor plan diagram">
+  <rect fill="#ffffff" width="1000" height="800" stroke="#cbd5e1" stroke-width="2"/>
+  <rect fill="#f8fafc" x="80" y="80" width="400" height="280" rx="2" stroke="#94a3b8"/>
+  <rect fill="#f8fafc" x="520" y="80" width="400" height="280" rx="2" stroke="#94a3b8"/>
+  <rect fill="#f8fafc" x="80" y="400" width="840" height="300" rx="2" stroke="#94a3b8"/>
+  <text x="500" y="48" text-anchor="middle" fill="#64748b" font-family="system-ui,sans-serif" font-size="20">Floor plan placeholder  replace with PDF/image from MLS</text>
+</svg>
