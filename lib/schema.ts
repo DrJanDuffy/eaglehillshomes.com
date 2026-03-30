@@ -63,6 +63,15 @@ export function getHomeJsonLd(): Record<string, unknown> {
 
   const sameAs = getAgentSameAsUrls();
 
+  const officePostalAddress = {
+    "@type": "PostalAddress",
+    streetAddress: "8850 W. Sunset Blvd, Suite 200",
+    addressLocality: "Las Vegas",
+    addressRegion: "NV",
+    postalCode: "89148",
+    addressCountry: "US",
+  };
+
   return {
     "@context": "https://schema.org",
     "@graph": [
@@ -72,7 +81,7 @@ export function getHomeJsonLd(): Record<string, unknown> {
         name: SITE_NAME,
         url: SITE_URL,
         inLanguage: "en-US",
-        publisher: { "@id": `${SITE_URL}/#agent` },
+        publisher: { "@id": `${SITE_URL}/#office` },
       },
       {
         "@type": "WebPage",
@@ -111,6 +120,18 @@ export function getHomeJsonLd(): Record<string, unknown> {
         url: BROKERAGE_SITE_URL,
       },
       {
+        "@type": "RealEstateOffice",
+        "@id": `${SITE_URL}/#office`,
+        name: BROKERAGE,
+        url: SITE_URL,
+        telephone: PHONE_E164,
+        email: EMAIL,
+        sameAs,
+        openingHours: BUSINESS_HOURS_CUSTOMER_COPY,
+        address: officePostalAddress,
+        parentOrganization: { "@id": `${SITE_URL}/#brokerage` },
+      },
+      {
         "@type": "RealEstateAgent",
         "@id": `${SITE_URL}/#agent`,
         name: AGENT_NAME,
@@ -121,6 +142,7 @@ export function getHomeJsonLd(): Record<string, unknown> {
         sameAs,
         jobTitle: "REALTOR®",
         worksFor: { "@id": `${SITE_URL}/#brokerage` },
+        workLocation: { "@id": `${SITE_URL}/#office` },
         openingHours: BUSINESS_HOURS_CUSTOMER_COPY,
         areaServed: [
           {
@@ -147,14 +169,7 @@ export function getHomeJsonLd(): Record<string, unknown> {
           "The Hills South village",
           "Guard-gated luxury homes Las Vegas",
         ],
-        address: {
-          "@type": "PostalAddress",
-          streetAddress: "8850 W. Sunset Blvd, Suite 200",
-          addressLocality: "Las Vegas",
-          addressRegion: "NV",
-          postalCode: "89148",
-          addressCountry: "US",
-        },
+        address: officePostalAddress,
       },
     ],
   };
