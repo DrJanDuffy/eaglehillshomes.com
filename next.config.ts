@@ -15,6 +15,15 @@ const csp = [
 ].join("; ");
 
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "imagedelivery.net",
+        pathname: "/**",
+      },
+    ],
+  },
   /** Use this package as tracing root when a parent folder has another lockfile. */
   outputFileTracingRoot: __dirname,
   /** Smaller responses; Vercel does not rely on this header. */

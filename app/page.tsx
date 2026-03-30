@@ -3,7 +3,12 @@ import { PropertyFloorPlan } from "@/components/property/PropertyFloorPlan";
 import { PropertyGallery } from "@/components/property/PropertyGallery";
 import { PropertyHero } from "@/components/property/PropertyHero";
 import { PropertyNeighborhood } from "@/components/property/PropertyNeighborhood";
+import { PropertyPhotosGrid } from "@/components/property/PropertyPhotosGrid";
 import { JsonLd } from "@/components/seo/json-ld";
+import {
+  absolutePropertyImageUrl,
+  getPropertyMedia,
+} from "@/lib/cloudflare-images";
 import {
   EAGLE_HILLS_COMMUNITY_DESCRIPTION,
   EAGLE_HILLS_LISTING_STATS,
@@ -29,9 +34,13 @@ const OFFICE_MAP_EMBED_SRC =
   encodeURIComponent(OFFICE_ADDRESS_SINGLE_LINE) +
   "&output=embed";
 
-const ogImageUrl = new URL(FEATURED_PROPERTY.heroImage.src, SITE_URL).toString();
+/** Read Cloudflare + listing env from Vercel on each request (Project → Settings → Environment Variables). */
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
+  const media = await getPropertyMedia();
+  const ogImageUrl = absolutePropertyImageUrl(media.heroImage.src, SITE_URL);
+
   const title = `${FEATURED_PROPERTY.headline} | ${SITE_NAME}`;
   const description = `Featured Summerlin listing in ${FEATURED_PROPERTY.addressLine}. ${FEATURED_PROPERTY.priceDisplay} · ${FEATURED_PROPERTY.beds} bed · ${FEATURED_PROPERTY.baths} bath · ${FEATURED_PROPERTY.livingSqft.toLocaleString("en-US")} sq ft. Tour and details with ${AGENT_NAME} (${BROKERAGE}).`;
 
@@ -50,9 +59,9 @@ export async function generateMetadata(): Promise<Metadata> {
       images: [
         {
           url: ogImageUrl,
-          width: FEATURED_PROPERTY.heroImage.width,
-          height: FEATURED_PROPERTY.heroImage.height,
-          alt: FEATURED_PROPERTY.heroImage.alt,
+          width: media.heroImage.width,
+          height: media.heroImage.height,
+          alt: media.heroImage.alt,
         },
       ],
     },
@@ -65,10 +74,13 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function HomePage() {
+export default async function HomePage() {
+  const media = await getPropertyMedia();
   const faqItems = getFaqContent();
   const stats = EAGLE_HILLS_LISTING_STATS;
   const listing = FEATURED_PROPERTY;
+
+  const primaryImageUrl = absolutePropertyImageUrl(media.heroImage.src, SITE_URL);
 
   const jsonLd = getHomePageJsonLdWithListing({
     slug: listing.slug,
@@ -79,6 +91,7 @@ export default function HomePage() {
     beds: listing.beds,
     baths: listing.baths,
     livingSqft: listing.livingSqft,
+    primaryImageUrl,
   });
 
   return (
@@ -94,7 +107,7 @@ export default function HomePage() {
           baths={listing.baths}
           livingSqft={listing.livingSqft}
           lotAcres={listing.lotAcres}
-          heroImage={listing.heroImage}
+          heroImage={media.heroImage}
         />
 
         <section className="mt-10 max-w-3xl">
@@ -106,6 +119,8 @@ export default function HomePage() {
             {AGENT_NAME} for a private tour of this home.
           </p>
         </section>
+
+        <PropertyPhotosGrid title="Property photos" items={media.propertyPhotos} />
 
         <section
           className="mt-12 rounded-xl border border-slate-200 bg-slate-50/80 p-6 md:p-8"
@@ -161,15 +176,15 @@ export default function HomePage() {
           </p>
         </section>
 
-        <PropertyGallery title="Gallery" items={listing.gallery} />
+        <PropertyGallery title="Gallery" items={media.gallery} />
 
         <PropertyFloorPlan
           title="Floor plan"
-          imageSrc={listing.floorPlan.imageSrc}
-          alt={listing.floorPlan.alt}
+          imageSrc={media.floorPlan.imageSrc}
+          alt={media.floorPlan.alt}
           width={listing.floorPlan.width}
           height={listing.floorPlan.height}
-          pdfHref={listing.floorPlan.pdfHref}
+          pdfHref={media.floorPlan.pdfHref}
         />
 
         <PropertyNeighborhood

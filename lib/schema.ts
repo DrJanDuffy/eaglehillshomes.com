@@ -173,6 +173,8 @@ export type FeaturedListingForSchema = {
   beds: number;
   baths: number;
   livingSqft: number;
+  /** Absolute URL for the primary listing photo (Thing `image`) */
+  primaryImageUrl: string;
 };
 
 /**
@@ -199,6 +201,7 @@ export function getHomePageJsonLdWithListing(listing: FeaturedListingForSchema):
       "@type": "SingleFamilyResidence",
       "@id": residenceId,
       name: listing.headline,
+      image: listing.primaryImageUrl,
       numberOfBedrooms: listing.beds,
       numberOfBathroomsTotal: listing.baths,
       floorSize: {
@@ -220,6 +223,7 @@ export function getHomePageJsonLdWithListing(listing: FeaturedListingForSchema):
       "@id": listingId,
       name: listing.headline,
       url: SITE_URL,
+      image: listing.primaryImageUrl,
       itemOffered: { "@id": residenceId },
       offers: {
         "@type": "Offer",
